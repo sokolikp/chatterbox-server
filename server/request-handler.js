@@ -27,7 +27,9 @@ var requestHandler = function(request, response) {
   // Adding more logging to your server can be an easy way to get passive
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
+  // console.log("I made it again");
   console.log("Serving request type " + request.method + " for url " + request.url);
+  // console.log(response);
 
   // The outgoing status.
   var statusCode = 200;
@@ -52,7 +54,16 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end("Hello, World!");
+  // request.on('data', this.method);
+
+  response.end(JSON.stringify({results: []}));
+  // response.writeHead(request.postdata);
+  // if(request.method === 'POST') {
+  //   console.log("I made it");
+  //   request.on('end', function() {console.log('arguments')});
+  // }
+
+
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
@@ -62,7 +73,7 @@ var requestHandler = function(request, response) {
 // Your chat client is running from a url like file://your/chat/client/index.html,
 // which is considered a different domain.
 //
-// Another way to get around this restriction is to serve you chat
+// Another way to get around this restriction is to serve your chat
 // client from this domain by setting up static file serving.
 var defaultCorsHeaders = {
   "access-control-allow-origin": "*",
@@ -71,3 +82,4 @@ var defaultCorsHeaders = {
   "access-control-max-age": 10 // Seconds.
 };
 
+module.exports.requestHandler = requestHandler;
