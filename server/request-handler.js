@@ -11,7 +11,6 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
-
 var results = [];
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -59,20 +58,29 @@ var requestHandler = function(request, response) {
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = "text/plain";
 
-  if(request.method === 'GET') {
-    statusCode = 200;
+  if(request.url.substring(0,8) !== '/classes') {
+    statusCode = 404;
     response.writeHead(statusCode, headers);
-    response.end(JSON.stringify({'results': results}));
+    response.end();
+  }
 
-  } else if(request.method === 'POST') {
+  else if(request.method === 'GET') {
+    statusCode = 200;
+
+    response.writeHead(statusCode, headers);
+    response.end(JSON.stringify({results: results}));
+
+  }
+
+  else if(request.method === 'POST') {
     statusCode = 201;
     response.writeHead(statusCode, headers);
 
     request.on('data', function(data) {
       results.push(JSON.parse(data));
     });
+
     request.on('end', function(){
-      console.log('I ended', results);
       response.end();
     });
   }
