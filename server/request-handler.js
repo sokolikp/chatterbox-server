@@ -58,13 +58,20 @@ var requestHandler = function(request, response) {
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = "text/plain";
 
-  if(request.url.substring(0,8) !== '/classes') {
-    statusCode = 404;
-    response.writeHead(statusCode, headers);
+  // if(request.url.substring(0,8) !== '/classes') {
+  //   statusCode = 404;
+  //   response.writeHead(statusCode, headers);
+  //   response.end();
+  // }
+
+  // else
+  if(request.method === 'OPTIONS') {
+    // console.log("I'm an option");
+    response.writeHead(200, headers);
     response.end();
   }
 
-  else if(request.method === 'GET') {
+  if(request.method === 'GET') {
     statusCode = 200;
 
     response.writeHead(statusCode, headers);
@@ -72,7 +79,7 @@ var requestHandler = function(request, response) {
 
   }
 
-  else if(request.method === 'POST') {
+  if(request.method === 'POST') {
     statusCode = 201;
     response.writeHead(statusCode, headers);
 

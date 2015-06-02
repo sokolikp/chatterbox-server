@@ -7,7 +7,7 @@ var user = {
 };
 
 var app = {
-  server: 'http://127.0.0.1:3000/classes/messages'
+  server: 'http://127.0.0.1:3000'
 };
 
 app.init = function(){
@@ -17,7 +17,7 @@ app.init = function(){
 
     setInterval(function(){
       app.fetch();
-    }, 1000);
+    }, 5000);
 
     $('document').on('click','.username',function(){
       app.addFriend($(this).text());
@@ -71,7 +71,11 @@ app.fetch = function(){
     url: this.server,
     type: 'GET',
     order: 'createdAt',
+    contentType: 'application/json',
     success: function (data) {
+      data = JSON.parse(data);
+      // console.log('data ', JSON.parse(data), typeof JSON.parse(data));
+      // console.log('results ', data.results);
       console.log('chatterbox: Messages received');
       app.clearMessages();
 
