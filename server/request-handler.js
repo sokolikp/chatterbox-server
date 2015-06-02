@@ -12,6 +12,7 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 
+var results = [];
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -34,18 +35,18 @@ var requestHandler = function(request, response) {
   // The outgoing status.
   var statusCode = 200;
 
-  // See the note below about CORS headers.
-  var headers = defaultCorsHeaders;
+  // // See the note below about CORS headers.
+  // var headers = defaultCorsHeaders;
 
-  // Tell the client we are sending them plain text.
-  //
-  // You will need to change this if you are sending something
-  // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = "text/plain";
+  // // Tell the client we are sending them plain text.
+  // //
+  // // You will need to change this if you are sending something
+  // // other than plain text, like JSON or HTML.
+  // headers['Content-Type'] = "text/plain";
 
-  // .writeHead() writes to the request line and headers of the response,
-  // which includes the status and all headers.
-  response.writeHead(statusCode, headers);
+  // // .writeHead() writes to the request line and headers of the response,
+  // // which includes the status and all headers.
+  // response.writeHead(statusCode, headers);
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
@@ -55,13 +56,26 @@ var requestHandler = function(request, response) {
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
   // request.on('data', this.method);
+  var headers = defaultCorsHeaders;
+  headers['Content-Type'] = "text/plain";
 
-  response.end(JSON.stringify({results: []}));
-  // response.writeHead(request.postdata);
-  // if(request.method === 'POST') {
-  //   console.log("I made it");
-  //   request.on('end', function() {console.log('arguments')});
-  // }
+  if(request.method === 'GET') {
+    statusCode = 200;
+    response.writeHead(statusCode, headers);
+    response.end(JSON.stringify({'results': results}));
+
+  } else if(request.method === 'POST') {
+    statusCode = 201;
+    response.writeHead(statusCode, headers);
+
+    request.on('data', function(data) {
+      results.push(JSON.parse(data));
+    });
+    request.on('end', function(){
+      console.log('I ended', results);
+      response.end();
+    });
+  }
 
 
 };
