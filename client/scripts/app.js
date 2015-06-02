@@ -7,7 +7,7 @@ var user = {
 };
 
 var app = {
-  server: 'http://127.0.0.1:3000'
+  server: 'http://127.0.0.1:3000/classes/messages'
 };
 
 app.init = function(){

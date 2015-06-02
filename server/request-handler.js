@@ -11,6 +11,8 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+var fs = require("fs");
+var stat = require('node-static');
 var results = [];
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -57,26 +59,36 @@ var requestHandler = function(request, response) {
   // request.on('data', this.method);
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = "text/plain";
-
-  // if(request.url.substring(0,8) !== '/classes') {
-  //   statusCode = 404;
-  //   response.writeHead(statusCode, headers);
-  //   response.end();
-  // }
-
-  // else
+  //var file = fs.readFile('/Users/student/Desktop/2015-05-chatterbox-server/client/index.html');
   if(request.method === 'OPTIONS') {
-    // console.log("I'm an option");
     response.writeHead(200, headers);
     response.end();
   }
 
   if(request.method === 'GET') {
     statusCode = 200;
-
-    response.writeHead(statusCode, headers);
-    response.end(JSON.stringify({results: results}));
-
+    console.log(request.url);
+    if(request.url === '/classes/messages') {
+      response.writeHead(statusCode, headers);
+      response.end(JSON.stringify({results: results}));
+    }
+    else if (request.url === '/') {
+      //console.log(file);
+      // var file = new stat.Server(__dirname + '/../client');
+      // request.addListener('end', function() {
+      //   file.serve(request, response);
+      // }).resume();
+      fs.readFile(__dirname + '/../client/index.html', function(error, data){
+        if(error){
+          console.log('error');
+        }
+        console.log('homepage', data);
+        response.writeHead(statusCode, {"Content-Type":"text/html"});
+        response.write(data);
+        response.end();
+      });
+      //response.end();
+    }
   }
 
   if(request.method === 'POST') {
